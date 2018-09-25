@@ -55,6 +55,8 @@ int make_move( int board[][3] )
 		for( int i = 0; i < 3; i++ )
 			for( int j = 0; j < 3; j++ )
 				// TODO: Pick an optimal move and make that move. Currently makes first avail move.
+				// TODO: Fix recursive call to only preform one move instead of finishing board.
+				// IDEA: Create a graded board to determine the best choice for a move.
 				// find an empty square
 				if( board[i][j] == 0 )
 				{
