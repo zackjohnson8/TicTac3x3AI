@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/tictac_support.h
+string
+-
+
+/home/zack/Desktop/Fall_2019_School/482_Artificial_Intelligence/TicTac3x3/1-tictactoe/src/tictac.cc
+stdio.h
+-
+tictac_support.h
+-
+
+/home/zack/Desktop/Fall_2019_School/482_Artificial_Intelligence/TicTac3x3/1-tictactoe/src/tictac_support.cc
+tictac_support.h
+-
+iostream
+-
+fstream
+-
+iomanip
+-
+
+/home/zack/Desktop/Fall_2019_School/482_Artificial_Intelligence/TicTac3x3/1-tictactoe/src/tictac_turnin.cc
+tictac_support.h
+-
+stdio.h
+-
+
