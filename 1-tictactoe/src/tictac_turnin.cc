@@ -62,6 +62,7 @@ int make_move( int board[][3] )
 				{
 					// that's the move
 					printf( "player [%d] made move: [%d,%d]\n", state, i, j );
+					minimaxMove( board, state );
 					board[i][j] = state;
 					return 1;
 				}
@@ -71,4 +72,80 @@ int make_move( int board[][3] )
 
 	// no move was made (board was full)
 	return 0;
+}
+
+// Using a board and the current move determine the best move.
+// Return a graded board to determine the best move
+// Return the best move
+void minimaxMove(int board[][3], int action)
+{
+
+	int gradedBoard[3][3];
+	int opponentAction = action * -1;
+
+	// copy board
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
+
+			if(board[i][j] != 0)
+			{
+				gradedBoard[i][j] = -100; // Can't make a move where there is already a move
+			}else
+			{
+				gradedBoard[i][j] = 0; // Blank the board on empty spots
+			}
+
+		}
+	}
+
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
+
+			// there is an opponentAction here
+			if(board[i][j] == opponentAction)
+			{
+				// Corners
+				if(i == 0 && j == 0)
+				{
+					gradedBoard[i+1][j] += 1;
+					gradedBoard[i+2][j] += 1;
+					gradedBoard[i][j+1] += 1;
+					gradedBoard[i][j+2] += 1;
+					gradedBoard[i+1][j+1] += 1;
+					gradedBoard[i+2][j+2] += 1;
+				}else
+				if(i == 0 && j == 2)
+				{
+					gradedBoard[i+1][j] += 1;
+					gradedBoard[i+2][j] += 1;
+					gradedBoard[i][j-1] += 1;
+					gradedBoard[i][j-2] += 1;
+					gradedBoard[i+1][j-1] += 1;
+					gradedBoard[i+2][j-2] += 1;
+				}else
+				if(i == 2 && j == 0)
+				{
+					gradedBoard[i-1][j] += 1;
+					gradedBoard[i-2][j] += 1;
+					gradedBoard[i][j+1] += 1;
+					gradedBoard[i][j+2] += 1;
+					gradedBoard[i-1][j+1] += 1;
+					gradedBoard[i-2][j+2] += 1;
+				}else
+				if(i == 2 && j == 2)
+				{
+					gradedBoard[i-1][j] += 1;
+					gradedBoard[i-2][j] += 1;
+					gradedBoard[i][j-1] += 1;
+					gradedBoard[i][j-2] += 1;
+					gradedBoard[i-1][j-1] += 1;
+					gradedBoard[i-2][j-2] += 1;
+				}
+
+
+			}
+
+		}
+	}
+
 }
