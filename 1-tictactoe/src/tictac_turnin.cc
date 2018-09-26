@@ -1,5 +1,14 @@
 #include <tictac_support.h>
 #include <stdio.h>
+#include <iostream>
+
+struct positionCordinates{
+	int x;
+	int y;
+};
+
+positionCordinates minimaxMove(int board[][3], int action);
+
 /**
 	make_move: takes a board state and makes a legal
 	(hopefully optimal) move
@@ -35,6 +44,7 @@ int make_move( int board[][3] )
 	else
 		state = -1;
 
+	positionCordinates bestMove;
 	if(state == 1)
 	{
 		// default behavior: find any unoccupied square and make the move
@@ -61,10 +71,10 @@ int make_move( int board[][3] )
 				if( board[i][j] == 0 )
 				{
 					// that's the move
-					printf( "player [%d] made move: [%d,%d]\n", state, i, j );
-					minimaxMove( board, state );
-					board[i][j] = state;
-					return 1;
+					bestMove = minimaxMove( board, state );
+					printf( "player [%d] made move: [%d,%d]\n", state, bestMove.x, bestMove.y );
+					board[bestMove.x][bestMove.y] = state;
+					make_move( board );
 				}
 	}
 
@@ -77,7 +87,7 @@ int make_move( int board[][3] )
 // Using a board and the current move determine the best move.
 // Return a graded board to determine the best move
 // Return the best move
-void minimaxMove(int board[][3], int action)
+positionCordinates minimaxMove(int board[][3], int action)
 {
 
 	int gradedBoard[3][3];
@@ -191,6 +201,22 @@ void minimaxMove(int board[][3], int action)
 
 
 			}
+
+			// Determine best position
+			int highestPosition = -100;
+			positionCordinates bestMove;
+			for(int i = 0; i < 3; i++){
+				for(int j = 0; j < 3; j++){
+					if(gradedBoard[i][j] >= highestPosition)
+					{
+						highestPosition = gradedBoard[i][j];
+						bestMove.x = i;
+						bestMove.y = j;
+					}
+				}
+			}
+
+			return bestMove;
 
 		}
 	}
