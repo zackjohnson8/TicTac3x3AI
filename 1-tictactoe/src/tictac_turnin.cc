@@ -141,6 +141,53 @@ void minimaxMove(int board[][3], int action)
 					gradedBoard[i-1][j-1] += 1;
 					gradedBoard[i-2][j-2] += 1;
 				}
+				// Middle N,S,E,W
+				else
+				if(i == 0 && j == 1)
+				{
+					gradedBoard[i+1][j] += 1;
+					gradedBoard[i+2][j] += 1;
+					gradedBoard[i][j-1] += 1;
+					gradedBoard[i][j+1] += 1;
+				}else
+				if(i == 1 && j == 0)
+				{
+					gradedBoard[i+1][j] += 1;
+					gradedBoard[i-1][j] += 1;
+					gradedBoard[i][j+1] += 1;
+					gradedBoard[i][j+2] += 1;
+				}else
+				if(i == 1 && j == 2)
+				{
+					gradedBoard[i+1][j] += 1;
+					gradedBoard[i-1][j] += 1;
+					gradedBoard[i][j-1] += 1;
+					gradedBoard[i][j-2] += 1;
+				}else
+				if(i == 2 && j == 1)
+				{
+					gradedBoard[i-1][j] += 1;
+					gradedBoard[i-2][j] += 1;
+					gradedBoard[i][j-1] += 1;
+					gradedBoard[i][j+1] += 1;
+				}
+				// Center Spot
+				else
+				if(i == 0 && j == 1)
+				{
+					gradedBoard[i-1][j-1] += 1; // top left
+					gradedBoard[i-1][j] += 1; // top mid
+					gradedBoard[i-1][j+1] += 1; // top right
+					gradedBoard[i][j-2] += 1; // mid left
+					gradedBoard[i][j+1] += 1; // mid right
+					gradedBoard[i+1][j-1] += 1; // bot left
+					gradedBoard[i+1][j] += 1; // bot mid
+					gradedBoard[i+1][j+1] += 1; // bot right
+				}else
+				{
+					// Position doesn't exist
+					std::cout << "position does not exist on board (tictac_turnin.cc Line 170)" << std::endl;
+				}
 
 
 			}
