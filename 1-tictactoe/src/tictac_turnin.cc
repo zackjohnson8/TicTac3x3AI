@@ -44,6 +44,22 @@ void outputBoard(int board[][3])
 		std::cout << std::endl;
 }
 
+bool isEmptyBoard(int board[][3])
+{
+	for( int i = 0; i < 3; i++ ){
+		for( int j = 0; j < 3; j++ ){
+			if(board[i][j] != 0)
+			{
+				return false;
+			}
+
+		}
+	}
+
+	return true;
+
+}
+
 int make_move( int board[][3] )
 {
 
@@ -75,7 +91,7 @@ int make_move( int board[][3] )
 					printf( "player [%d] made move: [%d,%d]\n", state, i, j );
 					board[i][j] = state;
 					// makes move and recursively calls make move again
-					return make_move( board );
+					return 1;
 				}
 	}else
 	{
@@ -88,7 +104,17 @@ int make_move( int board[][3] )
 				// find an empty square
 				if( board[i][j] == 0 )
 				{
+					int opponent = state * -1;
+					if(board[0][1] == opponent && board[1][1] == opponent && board[1][0] == opponent)
+					{
 
+						board[2][1] = state;
+						chosenMove.x = 2;
+						chosenMove.y = 1;
+						printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
+						return 1;
+
+					}
 
 					///// Determine if this move is a winning move ///
 					for( int i = 0; i < 3; i++ ){
@@ -135,6 +161,19 @@ int make_move( int board[][3] )
 						}
 					}
 					////////
+					/////////// Check if board is empty ////
+					if(isEmptyBoard(board))
+					{
+
+						board[1][1];
+						chosenMove.x = 1;
+						chosenMove.y = 1;
+						printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
+						return 1;
+
+					}
+					/////////////////////////
+
 					chosenMove = bestMove( board, state );
 					printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
 					board[chosenMove.x][chosenMove.y] = state;
@@ -395,12 +434,12 @@ int minimax(int board[][3], int depth, bool isMax, int state)
     // If Maximizer has won the game return his/her
     // evaluated score
     if (score == 10)
-        return score;
+        return score - depth;
 
     // If Minimizer has won the game return his/her
     // evaluated score
     if (score == -10)
-        return score;
+        return score + depth;
 
     // If there are no more moves and no winner then
     // it is a tie
