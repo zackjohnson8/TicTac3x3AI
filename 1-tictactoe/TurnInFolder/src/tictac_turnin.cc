@@ -104,17 +104,26 @@ int make_move( int board[][3] )
 				// find an empty square
 				if( board[i][j] == 0 )
 				{
-					int opponent = state * -1;
-					if(board[0][1] == opponent && board[1][1] == opponent && board[1][0] == opponent)
-					{
-
-						board[2][1] = state;
-						chosenMove.x = 2;
-						chosenMove.y = 1;
-						printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
-						return 1;
-
-					}
+					// int opponent = state * -1;
+					// if(board[0][1] == opponent && board[1][1] == opponent && board[1][0] == opponent)
+					// {
+					//
+					// 	board[2][1] = state;
+					// 	chosenMove.x = 2;
+					// 	chosenMove.y = 1;
+					// 	printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
+					// 	return 1;
+					//
+					// }
+					// if(board[2][0] == state && board[1][1] == state)
+					// {
+					// 	board[0][2] = state;
+					// 	chosenMove.x = 0;
+					// 	chosenMove.y = 2;
+					// 	printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
+					// 	//outputBoard(board);
+					// 	return 1;
+					// }
 
 					///// Determine if this move is a winning move ///
 					for( int i = 0; i < 3; i++ ){
