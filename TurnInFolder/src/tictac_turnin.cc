@@ -7,7 +7,9 @@ struct positionCordinates{
 	int y;
 };
 
-positionCordinates minimaxMove(int board[][3], int action);
+using namespace std;
+
+//positionCordinates minimaxMove(int board[][3], int action);
 
 /**
 	make_move: takes a board state and makes a legal
@@ -25,6 +27,12 @@ positionCordinates minimaxMove(int board[][3], int action);
 		the number of steps it took to choose the best move
 		(current implementation returns 1 by default, 0 if no move made)
 **/
+
+bool isMovesLeft(int board[][3]);
+positionCordinates bestMove(int board [][3], int state);
+int minimax(int board[][3], int depth, bool isMax, int state);
+int evaluate(int b[][3], int state);
+bool gameWinningMoveCheck(int b[][3], int state);
 
 int make_move( int board[][3] )
 {
@@ -44,7 +52,7 @@ int make_move( int board[][3] )
 	else
 		state = -1;
 
-	positionCordinates bestMove;
+	positionCordinates chosenMove;
 	if(state == 1)
 	{
 		// default behavior: find any unoccupied square and make the move
@@ -70,10 +78,54 @@ int make_move( int board[][3] )
 				// find an empty square
 				if( board[i][j] == 0 )
 				{
-					// that's the move
-					bestMove = minimaxMove( board, state );
-					printf( "player [%d] made move: [%d,%d]\n", state, bestMove.x, bestMove.y );
-					board[bestMove.x][bestMove.y] = state;
+
+
+					///// Determine if this move is a winning move ///
+					for( int i = 0; i < 3; i++ ){
+						for( int j = 0; j < 3; j++ ){
+							if(board[i][j] == 0)
+							{
+								board[i][j] = state;
+
+								if(gameWinningMoveCheck(board, state))
+								{
+									chosenMove.x = i;
+									chosenMove.y = j;
+									printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
+									return 1;
+								}else
+								{
+									board[i][j] = 0;
+								}
+							}
+						}
+					}
+					////////
+					///// Determine if next opponent move is winning move ///
+					for( int i = 0; i < 3; i++ ){
+						for( int j = 0; j < 3; j++ ){
+							if(board[i][j] == 0)
+							{
+								board[i][j] = state * -1;
+
+								if(gameWinningMoveCheck(board, state * -1))
+								{
+									chosenMove.x = i;
+									chosenMove.y = j;
+									board[i][j] = state;
+									printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
+									return 1;
+								}else
+								{
+									board[i][j] = 0;
+								}
+							}
+						}
+					}
+					////////
+					chosenMove = bestMove( board, state );
+					printf( "player [%d] made move: [%d,%d]\n", state, chosenMove.x, chosenMove.y );
+					board[chosenMove.x][chosenMove.y] = state;
 					return 1;
 				}
 	}
@@ -84,10 +136,57 @@ int make_move( int board[][3] )
 	return 0;
 }
 
+bool gameWinningMoveCheck(int b[][3], int state)
+{
+
+
+	// Checking for Rows for X or O victory.
+	for (int row = 0; row<3; row++)
+	{
+			if (b[row][0]==b[row][1] &&
+					b[row][1]==b[row][2])
+			{
+					if (b[row][0]==state)
+							return true;
+
+			}
+	}
+
+	// Checking for Columns for X or O victory.
+	for (int col = 0; col<3; col++)
+	{
+			if (b[0][col]==b[1][col] &&
+					b[1][col]==b[2][col])
+			{
+					if (b[0][col]==state)
+							return true;
+			}
+	}
+
+	// Checking for Diagonals for X or O victory.
+	if (b[0][0]==b[1][1] && b[1][1]==b[2][2])
+	{
+			if (b[0][0]==state)
+					return true;
+	}
+
+	if (b[0][2]==b[1][1] && b[1][1]==b[2][0])
+	{
+			if (b[0][2]==state)
+					return true;
+	}
+
+	// Else if none of them have won then return 0
+	return false;
+
+}
+
+
 // Using a board and the current move determine the best move.
 // Return a graded board to determine the best move
 // Return the best move
-positionCordinates minimaxMove(int board[][3], int action)
+// TODO: May Remove
+/*positionCordinates minimaxMove(int board[][3], int action)
 {
 
 	int gradedBoard[3][3];
@@ -219,4 +318,204 @@ positionCordinates minimaxMove(int board[][3], int action)
 
 	return bestMove;
 
+}
+*/
+
+positionCordinates bestMove(int board[][3], int state)
+{
+		int bestVal = -1000;
+    positionCordinates bestMove;
+    bestMove.x = -1;
+    bestMove.y = -1;
+
+		//if(winThisTurn)
+		//{
+
+		//}
+
+    // Traverse all cells, evalutae minimax function for
+    // all empty cells. And return the cell with optimal
+    // value.
+    for (int i = 0; i<3; i++)
+    {
+        for (int j = 0; j<3; j++)
+        {
+            // Check if cell is empty
+            if (board[i][j]==0)
+            {
+                // Make the move
+                board[i][j] = state;
+
+                // compute evaluation function for this
+                // move.
+                int moveVal = minimax(board, 0, false, state);
+
+                // Undo the move
+                board[i][j] = 0;
+
+                // If the value of the current move is
+                // more than the best value, then update
+                // best/
+                if (moveVal > bestVal)
+                {
+                    bestMove.x = i;
+                    bestMove.y = j;
+                    bestVal = moveVal;
+                }
+            }
+        }
+    }
+
+    return bestMove;
+}
+
+// This is the minimax function. It considers all
+// the possible ways the game can go and returns
+// the value of the board
+int minimax(int board[][3], int depth, bool isMax, int state)
+{
+
+		int opponent = state * -1;
+
+    int score = evaluate(board, state);
+
+    // If Maximizer has won the game return his/her
+    // evaluated score
+    if (score == 10)
+        return score;
+
+    // If Minimizer has won the game return his/her
+    // evaluated score
+    if (score == -10)
+        return score;
+
+    // If there are no more moves and no winner then
+    // it is a tie
+    if (isMovesLeft(board)==false)
+        return 0;
+
+    // If this maximizer's move
+    if (isMax)
+    {
+        int best = -1000;
+
+        // Traverse all cells
+        for (int i = 0; i<3; i++)
+        {
+            for (int j = 0; j<3; j++)
+            {
+                // Check if cell is empty
+                if (board[i][j]==0)
+                {
+                    // Make the move
+                    board[i][j] = state;
+
+                    // Call minimax recursively and choose
+                    // the maximum value
+                    best = max( best,
+                        minimax(board, depth+1, !isMax, state) );
+
+                    // Undo the move
+                    board[i][j] = 0;
+                }
+            }
+        }
+        return best;
+    }
+
+    // If this minimizer's move
+    else
+    {
+        int best = 1000;
+
+        // Traverse all cells
+        for (int i = 0; i<3; i++)
+        {
+            for (int j = 0; j<3; j++)
+            {
+                // Check if cell is empty
+                if (board[i][j]==0)
+                {
+                    // Make the move
+                    board[i][j] = opponent;
+
+                    // Call minimax recursively and choose
+                    // the minimum value
+                    best = min(best,
+                           minimax(board, depth+1, !isMax, state));
+
+                    // Undo the move
+                    board[i][j] = 0;
+                }
+            }
+        }
+        return best;
+    }
+}
+
+// This is the evaluation function as discussed
+// in the previous article ( http://goo.gl/sJgv68 )
+int evaluate(int b[][3], int state)
+{
+
+		int opponent = state * -1;
+
+    // Checking for Rows for X or O victory.
+    for (int row = 0; row<3; row++)
+    {
+        if (b[row][0]==b[row][1] &&
+            b[row][1]==b[row][2])
+        {
+            if (b[row][0]==state)
+                return +10;
+            else if (b[row][0]==opponent)
+                return -10;
+        }
+    }
+
+    // Checking for Columns for X or O victory.
+    for (int col = 0; col<3; col++)
+    {
+        if (b[0][col]==b[1][col] &&
+            b[1][col]==b[2][col])
+        {
+            if (b[0][col]==state)
+                return +10;
+
+            else if (b[0][col]==opponent)
+                return -10;
+        }
+    }
+
+    // Checking for Diagonals for X or O victory.
+    if (b[0][0]==b[1][1] && b[1][1]==b[2][2])
+    {
+        if (b[0][0]==state)
+            return +10;
+        else if (b[0][0]==opponent)
+            return -10;
+    }
+
+    if (b[0][2]==b[1][1] && b[1][1]==b[2][0])
+    {
+        if (b[0][2]==state)
+            return +10;
+        else if (b[0][2]==opponent)
+            return -10;
+    }
+
+    // Else if none of them have won then return 0
+    return 0;
+}
+
+// This function returns true if there are moves
+// remaining on the board. It returns false if
+// there are no moves left to play.
+bool isMovesLeft(int board[][3])
+{
+    for (int i = 0; i<3; i++)
+        for (int j = 0; j<3; j++)
+            if (board[i][j]==0)
+                return true;
+    return false;
 }
